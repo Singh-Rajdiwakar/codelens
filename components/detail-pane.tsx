@@ -290,7 +290,7 @@ function AskPlaceholder({ analysisId }: { analysisId: string }) {
             id="repository-question"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Where does src/config/logger.js connect?"
+            placeholder="Search here about this project..."
             className="min-h-10 min-w-0 flex-1 bg-transparent px-3 text-sm outline-none placeholder:text-fg-muted"
           />
           <button type="submit" disabled={!question.trim() || loading} className="min-h-10 rounded-lg bg-accent px-4 text-xs font-semibold text-accent-fg disabled:opacity-50">
