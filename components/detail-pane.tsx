@@ -258,6 +258,7 @@ function RepositoryTab({ active, onClick, children }: { active: boolean; onClick
 }
 
 function AskPlaceholder({ analysisId }: { analysisId: string }) {
+  const ASK_TIMEOUT_MS = 45_000;
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -267,10 +268,22 @@ function AskPlaceholder({ analysisId }: { analysisId: string }) {
     event.preventDefault();
     setLoading(true);
     setError(null);
-    const result = await askRepositoryAction(analysisId, question);
-    if (result.ok) setAnswer(result.body);
-    else setError(result.error);
-    setLoading(false);
+    let timeoutId: number | undefined;
+    try {
+      const result = await Promise.race([
+        askRepositoryAction(analysisId, question),
+        new Promise<never>((_, reject) => {
+          timeoutId = window.setTimeout(() => reject(new Error("The repository answer took too long. Please try again.")), ASK_TIMEOUT_MS);
+        }),
+      ]);
+      if (result.ok) setAnswer(result.body);
+      else setError(result.error);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "The repository question failed. Please try again.");
+    } finally {
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      setLoading(false);
+    }
   }
 
   return (
