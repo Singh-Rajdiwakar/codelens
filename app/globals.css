@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/*
+ * data-theme on <html> is system | light | dark. color-scheme decides which
+ * side of every light-dark() pair applies, so a forced theme beats the OS
+ * preference without a second copy of the palette.
+ */
+:root {
+  color-scheme: light dark;
+
+  --canvas: light-dark(#f7f5f0, #121110);
+  --surface: light-dark(#fffefb, #1a1917);
+  --raised: light-dark(#efece4, #242220);
+  --line: light-dark(#e2ddd1, #302d29);
+  --fg: light-dark(#1b1a17, #efece6);
+  --fg-muted: light-dark(#6f6a5e, #9a9488);
+  --accent: light-dark(#3730a3, #8b8cff);
+  --accent-fg: #ffffff;
+  --accent-soft: color-mix(in srgb, var(--accent) 10%, transparent);
+  --danger: light-dark(#b42318, #f97066);
+  --success: light-dark(#1f7a4d, #5fd39a);
+  --shadow-sm: 0 1px 2px rgb(38 32 22 / 7%), 0 3px 8px rgb(38 32 22 / 4%);
+  --shadow-md: 0 8px 24px rgb(38 32 22 / 10%), 0 2px 6px rgb(38 32 22 / 6%);
+  --ring: color-mix(in srgb, var(--accent) 72%, white);
+  --font-sans: var(--font-hanken);
+  --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-newsreader);
+
+  /* Direction: into a file, out of a file. */
+  --incoming: light-dark(#1f7a4d, #5fd39a);
+  --outgoing: light-dark(#b26a00, #f0b44c);
+
+  /* File kinds. Kept clear of the accent blue and the two direction hues. */
+  --kind-1: light-dark(#5b4bc4, #a99cff);
+  --kind-2: light-dark(#b0397a, #f08cc2);
+  --kind-3: light-dark(#c2410c, #fb9a6b);
+  --kind-4: light-dark(#0e7490, #5ccbe0);
+
+  --edge: light-dark(#b9b2a0, #55504a);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-incoming: var(--incoming);
+  --color-outgoing: var(--outgoing);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --font-sans: var(--font-hanken);
+  --font-mono: var(--font-jetbrains);
+  --font-serif: var(--font-newsreader);
+}
+
+/*
+ * Every size is in rem, so the root size is the one dial. Up to a 1440px-wide
+ * viewport it's 16px; past that it grows in proportion, so a large display
+ * shows the laptop layout scaled up rather than the same small layout
+ * floating in empty space. Capped for very wide windows.
+ */
+html {
+  font-size: clamp(16px, 100vw / 100, 18px);
+}
+
+body {
+  background: var(--canvas);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-image: radial-gradient(circle at 1px 1px, rgb(111 106 94 / 8%) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a,
+input,
+[role="button"] {
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+:where(button, a, input, [role="button"]):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* React Flow's base stylesheet leaves edges unstyled; they're greyscale until
+   a selection gives them a direction. */
+.react-flow__edge-path {
+  stroke: var(--edge);
+  fill: none;
+  stroke-width: 1.25;
+}
